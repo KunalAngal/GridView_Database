@@ -1,0 +1,82 @@
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="YourPage.aspx.cs" Inherits="YourNamespace.YourPage" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Bootstrap Modal Example</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+</head>
+<body>
+
+    <form id="form1" runat="server">
+        <div class="container">
+            <h1>Bootstrap Modal Example</h1>
+
+            <!-- Button to trigger the modal -->
+            <asp:Button ID="btnOpenModal" runat="server" Text="Open Modal" CssClass="btn btn-primary" />
+
+            <!-- Bootstrap Modal -->
+            <div class="modal" id="myModal" runat="server">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Modal Title</h4>
+                            <button type="button" class="close" data-dismiss="modal" runat="server">&times;</button>
+                        </div>
+
+                        <!-- Modal Body -->
+                        <div class="modal-body">
+                            <!-- Dynamic Content Here -->
+                            <asp:Literal ID="ltlModalContent" runat="server"></asp:Literal>
+                        </div>
+
+                        <!-- Modal Footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" runat="server">Close</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Include Bootstrap JS and jQuery -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+        <script>
+            // Function to open the modal with dynamic content
+            function openModal(content) {
+                $('#<%= ltlModalContent.ClientID %>').html(content);
+                $('#myModal').modal('show');
+            }
+
+            // Function to close the modal
+            function closeModal() {
+                $('#myModal').modal('hide');
+            }
+        </script>
+    </form>
+</body>
+</html>
+
+
+
+
+
+
+
+protected void btnOpenModal_Click(object sender, EventArgs e)
+{
+    // Set dynamic content for the modal
+    ltlModalContent.Text = "This is dynamic content in the modal.";
+
+    // Call the JavaScript function to open the modal
+    ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openModal();", true);
+}
