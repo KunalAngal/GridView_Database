@@ -1,0 +1,126 @@
+<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="WebApplication1._Default" %>
+
+<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+
+   <div>
+       <div style="color:red; font-size:x-large; text-align:center">Student Information</div>
+       <br>
+
+       <table class="w-100">
+           <tr>
+               <td style="width: 255px">&nbsp;</td>
+               <td style="width: 237px">Student ID:</td>
+               <td>
+                   <asp:TextBox ID="TextBox1" runat="server" Width="235px"></asp:TextBox>
+               </td>
+           </tr>
+           <tr>
+               <td style="width: 255px">&nbsp;</td>
+               <td style="width: 237px">Student Name:</td>
+               <td>
+                   <asp:TextBox ID="TextBox2" runat="server" Width="235px"></asp:TextBox>
+               </td>
+           </tr>
+           <tr>
+               <td style="width: 255px">&nbsp;</td>
+               <td style="width: 237px">Age:</td>
+               <td>
+                   <asp:TextBox ID="TextBox3" runat="server" Width="235px"></asp:TextBox>
+               </td>
+           </tr>
+           <tr>
+               <td style="width: 255px">&nbsp;</td>
+               <td style="width: 237px">Contact:</td>
+               <td>
+                   <asp:TextBox ID="TextBox4" runat="server" Width="235px"></asp:TextBox>
+                   <br />
+                   <br />
+                   <asp:Button ID="Button1" runat="server" BackColor="#9933FF" BorderStyle="Solid" ForeColor="White" OnClick="Button1_Click" Text="Insert" />&nbsp;&nbsp;
+                   <asp:Button ID="Button2" runat="server" BackColor="#9933FF" BorderStyle="Solid" ForeColor="White" OnClick="Button2_Click" Text="Update" />
+                   <asp:Button ID="Button3" runat="server" BackColor="#9933FF" BorderStyle="Solid" ForeColor="White" OnClick="Button3_Click" Text="Delete" />
+                   <br />
+               </td>
+           </tr>
+       </table>
+
+   </div>
+
+    <asp:GridView ID="GridView1" runat="server" style="margin-right: 0px" Width="538px"></asp:GridView>
+
+</asp:Content>
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace WebApplication1
+{
+    public partial class _Default : Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                LoadRecord();
+            }
+        }
+
+        SqlConnection con = new SqlConnection("Data Source=DESKTOP-G56FSOK\\SQLEXPRESS01;Initial Catalog=ProgrammingDB;Integrated Security=True;Encrypt=False");
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+
+            con.Open();
+            SqlCommand cmd = new SqlCommand("Insert into StudentInfo_Tab values('" + int.Parse(TextBox1.Text) + "','" + TextBox2.Text + "','" + int.Parse(TextBox3.Text) + "','" + TextBox4.Text + "')", con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Inserted');", true);
+            LoadRecord();
+        }
+
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+
+            con.Open();
+            SqlCommand cmd = new SqlCommand("update StudentInfo_Tab set StudentName='" + TextBox2.Text + "', Age='" + int.Parse(TextBox3.Text) + "', Contact='" + TextBox4.Text + "' where StudentID = '" + int.Parse(TextBox1.Text) + "'", con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Data Updated');", true);
+            LoadRecord();
+        }
+
+        protected void Button3_Click(object sender, EventArgs e)
+        {
+
+            con.Open();
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "script", "alert('Successfully Deleted Student' );", true);
+            SqlCommand cmd = new SqlCommand("Delete from StudentInfo_Tab where StudentID='" + int.Parse(TextBox1.Text) + "'", con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+            LoadRecord();
+        }
+
+        void LoadRecord()
+        {
+            SqlCommand cmd = new SqlCommand("select * from StudentInfo_Tab ", con);
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            GridView1.DataSource = dt;
+            GridView1.DataBind();
+        }
+    }
+}
+
+
+
+
+
+
